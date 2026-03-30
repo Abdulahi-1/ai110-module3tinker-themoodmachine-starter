@@ -52,8 +52,31 @@ class MoodAnalyzer:
           - Handle simple emojis separately (":)", ":-(", "🥲", "😂")
           - Normalize repeated characters ("soooo" -> "soo")
         """
-        cleaned = text.strip().lower()
-        tokens = cleaned.split()
+        text = text.strip().lower()
+        tokens = text.split()
+
+        # handle simple emojis before stripping punctuation
+        emojis = {":)": "happy",
+                  ":-)": "happy",
+                  ":(": "sad",
+                  ":-(": "sad",
+                  "😂": "happy",
+                  "😭": "sad",
+                  "🥲": "mixed"}
+        tokens = [emojis.get(token, token) for token in tokens]
+
+        # remove punctuation from tokens
+        tokens = [token.strip(".,!?;:()[]{}\"'") for token in tokens]
+
+        # normalize repeated characters (collapse runs of 3+ down to 1)
+        import itertools
+        def normalize_repeated_characters(token: str) -> str:
+            result = []
+            for char, group in itertools.groupby(token):
+                run = list(group)
+                result.append(char if len(run) >= 3 else "".join(run))
+            return "".join(result)
+        tokens = [normalize_repeated_characters(token) for token in tokens]
 
         return tokens
 
@@ -83,7 +106,23 @@ class MoodAnalyzer:
         #
         # Hint: if you implement negation, you may want to look at pairs of tokens,
         # like ("not", "happy") or ("never", "fun").
-        pass
+        
+        # Handle simple negation by looking for "not" or "never" before a positive or negative word.
+        tokens = self.preprocess(text)
+        score = 0
+        negation = False
+        for token in tokens:
+            if token in ["not", "never"]:
+                negation = True
+                continue
+            if token in self.positive_words:
+                score += -1 if negation else 1
+            elif token in self.negative_words:
+                score += 1 if negation else -1
+            negation = False  # reset negation after applying it to one word
+        return score
+    
+
 
     # ---------------------------------------------------------------------
     # Label prediction
@@ -105,12 +144,13 @@ class MoodAnalyzer:
         Just remember that whatever labels you return should match the labels
         you use in TRUE_LABELS in dataset.py if you care about accuracy.
         """
-        # TODO: Implement this method.
-        #   1. Call self.score_text(text) to get the numeric score.
-        #   2. Return "positive" if the score is above 0.
-        #   3. Return "negative" if the score is below 0.
-        #   4. Return "neutral" otherwise.
-        pass
+        score = self.score_text(text)
+        if score > 0:
+            return "positive"
+        elif score < 0:
+            return "negative"
+        else:
+            return "neutral"
 
     # ---------------------------------------------------------------------
     # Explanations (optional but recommended)

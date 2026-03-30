@@ -50,6 +50,13 @@ SAMPLE_POSTS = [
     "This is fine",
     "So excited for the weekend",
     "I am not happy about this",
+    "Lowkey stressed but kind of proud of myself",
+    "I absolutely love getting stuck in traffic",
+    "Can't decide if I'm sad or just really tired",
+    "Had a great day but also kind of miss my friends",
+    "Feeling a bit overwhelmed but also grateful no cap",
+    "Not sure if I'm laughing or crying 😂",
+    "Just had the worst day ever 😭",
 ]
 
 # Human labels for each post above.
@@ -65,9 +72,16 @@ TRUE_LABELS = [
     "neutral",   # "This is fine"
     "positive",  # "So excited for the weekend"
     "negative",  # "I am not happy about this"
+    "mixed",     # "Lowkey stressed but kind of proud of myself"
+    "sarcastic", # "I absolutely love getting stuck in traffic"
+    "mixed",     # "Can't decide if I'm sad or just really tired"
+    "mixed",     # "Had a great day but also kind of miss my friends"
+    "mixed",     # "Feeling a bit overwhelmed but also grateful no cap"
+    "ambiguous", # "Not sure if I'm laughing or crying 😂"
+    "negative",  # "Just had the worst day ever 😭"
 ]
 
-# TODO: Add 5-10 more posts and labels.
+# (COMPLETED) TODO: Add 5-10 more posts and labels.
 #
 # Requirements:
 #   - For every new post you add to SAMPLE_POSTS, you must add one
